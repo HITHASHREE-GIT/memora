@@ -1,0 +1,9 @@
+# Python 
+venv/ 
+__pycache__/ 
+*.pyc 
+.env 
+node_modules/ 
+dist/ 
+.vscode/ 
+qdrant_storage/ 
