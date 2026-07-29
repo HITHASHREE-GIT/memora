@@ -290,3 +290,16 @@ export default function CameraView({ onCapture, isProcessing, onClose }) {
         </div>
     );
 }
+{/* Enroll Button */}
+<button 
+    onClick={() => {
+        if (onCapture) {
+            // Capture the current frame for enrollment
+            capture();
+        }
+    }}
+    className="enroll-btn"
+    title="Enroll this person"
+>
+    👤 Enroll Person
+</button>

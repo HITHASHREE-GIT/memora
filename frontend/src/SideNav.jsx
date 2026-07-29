@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Users, Settings, Brain, Camera, MessageCircle, UserPlus } from 'lucide-react';
+import { Home, Users, Settings, Brain } from 'lucide-react';
 
 const SideNav = ({ onViewChange, currentView }) => {
     return (
@@ -9,7 +9,6 @@ const SideNav = ({ onViewChange, currentView }) => {
                 <span className="brand-text">Memora</span>
             </div>
             <div className="nav-links">
-                {/* Home */}
                 <div
                     className={`nav-item ${currentView === 'home' || currentView === 'landing' ? 'active' : ''}`}
                     onClick={() => onViewChange('home')}
@@ -17,50 +16,19 @@ const SideNav = ({ onViewChange, currentView }) => {
                     <Home size={20} />
                     <span>Home</span>
                 </div>
-
-                {/* Family */}
                 <div
-                    className={`nav-item ${currentView === 'family' ? 'active' : ''}`}
-                    onClick={() => onViewChange('family')}
+                    className={`nav-item ${currentView === 'patient' ? 'active' : ''}`}
+                    onClick={() => onViewChange('patient')}
                 >
                     <Users size={20} />
-                    <span>Family</span>
+                    <span>Patient</span>
                 </div>
-
-                {/* Scan */}
-                <div
-                    className={`nav-item ${currentView === 'scan' ? 'active' : ''}`}
-                    onClick={() => onViewChange('scan')}
-                >
-                    <Camera size={20} />
-                    <span>Scan</span>
-                </div>
-
-                {/* Chat */}
-                <div
-                    className={`nav-item ${currentView === 'chat' ? 'active' : ''}`}
-                    onClick={() => onViewChange('chat')}
-                >
-                    <MessageCircle size={20} />
-                    <span>Chat</span>
-                </div>
-
-                {/* ===== CAREGIVER ===== */}
                 <div
                     className={`nav-item ${currentView === 'caregiver' ? 'active' : ''}`}
                     onClick={() => onViewChange('caregiver')}
                 >
-                    <UserPlus size={20} />
-                    <span>Caregiver</span>
-                </div>
-
-                {/* Settings */}
-                <div
-                    className={`nav-item ${currentView === 'settings' ? 'active' : ''}`}
-                    onClick={() => onViewChange('settings')}
-                >
                     <Settings size={20} />
-                    <span>Settings</span>
+                    <span>Caregiver</span>
                 </div>
             </div>
             <style>{`

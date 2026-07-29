@@ -16,37 +16,75 @@ const LoginPage = ({ onLogin }) => {
         e.preventDefault();
         setError('');
 
-        // Validate: For Sign Up, name is required
-        if (!isLogin && !formData.name.trim()) {
-            setError('Please enter your full name');
+        // Get existing users from localStorage
+        const existingUsers = JSON.parse(localStorage.getItem('memora_users') || '[]');
+
+        // ===== REGISTRATION (Sign Up) =====
+        if (!isLogin) {
+            // Name validation
+            if (!formData.name.trim()) {
+                setError('Please enter your full name');
+                return;
+            }
+
+            // Password validation
+            if (formData.password !== formData.confirmPassword) {
+                setError('Passwords do not match');
+                return;
+            }
+
+            if (formData.password.length < 6) {
+                setError('Password must be at least 6 characters');
+                return;
+            }
+
+            // Check if email already registered
+            if (existingUsers.find(u => u.email === formData.email)) {
+                setError('This email is already registered. Please login.');
+                return;
+            }
+
+            // Save new user
+            const newUser = {
+                name: formData.name.trim(),
+                email: formData.email,
+                password: formData.password,
+                createdAt: new Date().toISOString()
+            };
+            existingUsers.push(newUser);
+            localStorage.setItem('memora_users', JSON.stringify(existingUsers));
+
+            // Auto-login after registration
+            console.log('✅ Registration successful:', newUser.name);
+            onLogin({ name: newUser.name, email: newUser.email });
             return;
         }
 
-        // Validate: Password match for Sign Up
-        if (!isLogin && formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
-            return;
-        }
-
-        // Validate: Email and password required
+        // ===== LOGIN (Sign In) =====
         if (!formData.email || !formData.password) {
             setError('Please fill in all fields');
             return;
         }
 
-        console.log('Form submitted:', formData);
-        
-        // Pass the name to parent - use the entered name or fallback to 'User'
-        const userName = formData.name.trim() || 'User';
-        onLogin({ 
-            name: userName, 
-            email: formData.email 
-        });
+        // Check if user exists
+        const user = existingUsers.find(u => u.email === formData.email);
+        if (!user) {
+            setError('User not found. Please register first.');
+            return;
+        }
+
+        if (user.password !== formData.password) {
+            setError('Incorrect password. Please try again.');
+            return;
+        }
+
+        // Login successful
+        console.log('✅ Login successful:', user.name);
+        onLogin({ name: user.name, email: user.email });
     };
 
     const handleSwitchMode = () => {
         setIsLogin(!isLogin);
-        // Clear form when switching
         setFormData({
             name: '',
             email: '',
@@ -81,7 +119,7 @@ const LoginPage = ({ onLogin }) => {
                             />
                         </div>
                     )}
-                    
+
                     {/* ===== EMAIL FIELD ===== */}
                     <div className="form-group">
                         <Mail size={18} />
@@ -104,7 +142,7 @@ const LoginPage = ({ onLogin }) => {
                             onChange={(e) => setFormData({...formData, password: e.target.value})}
                             required
                         />
-                        <button 
+                        <button
                             type="button"
                             className="toggle-password"
                             onClick={() => setShowPassword(!showPassword)}
@@ -140,7 +178,7 @@ const LoginPage = ({ onLogin }) => {
                 <div className="login-footer">
                     <p>
                         {isLogin ? "Don't have an account?" : "Already have an account?"}
-                        <button 
+                        <button
                             type="button"
                             className="switch-btn"
                             onClick={handleSwitchMode}
