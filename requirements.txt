@@ -18,3 +18,4 @@ opencv-python-headless
 keras_facenet 
 tf-keras 
 qdrant-client==1.16.2 
+tensorflow==2.18.0
