@@ -18,3 +18,4 @@ ultralytics
 opencv-python-headless 
 keras_facenet 
 tf-keras 
+qdrant-client==1.16.2 
