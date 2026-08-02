@@ -9,8 +9,7 @@
 
 ## 🌐 Live Demo
 
-🔗 **Production URL:** [https://memora-api-6wym.onrender.com](https://memora-api-6wym.onrender.com)
-
+🔗 **Production URL:** https://memora-1-two.vercel.app
 ---
 
 ## ✨ Key Features
@@ -41,7 +40,7 @@
 
 ---
 
-## 🏗️ Architecture
+
 ## 🏗️ Architecture
 
 ```
@@ -487,7 +486,7 @@ Python	3.14	3.14
 Internet	Required	Required
 🔗 Quick Links
 
-    🌐 Live Demo: https://memora-api-6wym.onrender.com
+    🌐 Live Demo: https://memora-api-6wym.onrender.com  ,https://memora-1-two.vercel.app/
 
     🐙 GitHub: https://github.com/HITHASHREE-GIT/memora
 
