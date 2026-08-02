@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Brain } from 'lucide-react';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+// ✅ FIXED: Use environment variable instead of hardcoded localhost
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api/v1';
 
 const MemoryScore = ({ score = 75 }) => {
     const [memoryScore, setMemoryScore] = useState(score);
