@@ -12,7 +12,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
-    // Check if voice is supported
     useEffect(() => {
         const hasSpeechRecognition = 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
         const hasSpeechSynthesis = 'speechSynthesis' in window;
@@ -21,40 +20,30 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
         }
     }, []);
 
-    // ===== TEXT TO SPEECH (Memora Speaks) =====
     const speakText = (text) => {
         if (!('speechSynthesis' in window)) {
             console.log('Speech synthesis not supported');
             return;
         }
 
-        // Cancel any ongoing speech
         window.speechSynthesis.cancel();
-
         setIsSpeaking(true);
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9; // Slightly slower for elderly
-        utterance.pitch = 1.1; // Slightly higher, warmer
+        utterance.rate = 0.9;
+        utterance.pitch = 1.1;
         utterance.volume = 1;
         
-        // Try to use a female voice if available
         const voices = window.speechSynthesis.getVoices();
         const femaleVoice = voices.find(v => v.name.includes('Female') || v.name.includes('Samantha') || v.name.includes('Google UK Female'));
         if (femaleVoice) {
             utterance.voice = femaleVoice;
         }
 
-        utterance.onend = () => {
-            setIsSpeaking(false);
-        };
-        utterance.onerror = () => {
-            setIsSpeaking(false);
-        };
-
+        utterance.onend = () => setIsSpeaking(false);
+        utterance.onerror = () => setIsSpeaking(false);
         window.speechSynthesis.speak(utterance);
     };
 
-    // ===== SPEECH TO TEXT (Patient Speaks) =====
     const startListening = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         
@@ -96,12 +85,11 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
             const transcript = event.results[0][0].transcript;
             setInput(transcript);
             
-            // If final result, auto-send
             if (event.results[0].isFinal) {
                 setIsListening(false);
                 setTimeout(() => {
                     if (transcript.trim()) {
-                        onSendMessage(transcript);
+                        onSendMessage(transcript); // ✅ This stays the same
                         setInput('');
                     }
                 }, 300);
@@ -113,9 +101,8 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
 
     const handleSend = () => {
         if (!input.trim()) return;
-        // If user types and has a message, send it
         if (input !== '🎤 Listening...') {
-            onSendMessage(input);
+            onSendMessage(input); // ✅ This stays the same
             setInput('');
         }
     };
@@ -126,7 +113,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
 
     return (
         <div className="chat-container">
-            {/* Voice Status Indicator */}
             {isListening && (
                 <div className="voice-indicator">
                     <span className="pulse-ring"></span>
@@ -140,7 +126,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
                 </div>
             )}
 
-            {/* Messages Area */}
             <div className="messages-area">
                 {messages.length === 0 ? (
                     <div className="empty-state">
@@ -177,7 +162,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
             <div className="input-area">
                 <button 
                     onClick={onScanFace}
@@ -225,7 +209,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
                     position: relative;
                 }
                 
-                /* Voice Indicator */
                 .voice-indicator {
                     position: absolute;
                     top: 50%;
@@ -275,7 +258,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
                     to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
                 }
 
-                /* Messages */
                 .messages-area {
                     flex: 1;
                     overflow-y: auto;
@@ -353,7 +335,6 @@ export default function ChatInterface({ messages, onSendMessage, onScanFace }) {
                     to { opacity: 1; transform: translateY(0); }
                 }
 
-                /* Input */
                 .input-area {
                     display: flex;
                     gap: 10px;

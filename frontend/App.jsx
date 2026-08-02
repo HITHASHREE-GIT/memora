@@ -35,22 +35,49 @@ function App() {
     setMessage('💬 Chat mode activated!');
   };
 
-  const handleSendMessage = (text) => {
+  // ✅ REPLACE THIS ENTIRE FUNCTION with the new one
+  const handleSendMessage = async (text) => {
+    // Add user message to UI
     setMessages(prev => [...prev, { role: 'user', text }]);
+    setMessage('🤔 Thinking...');
     
-    // Simulate bot response
-    setTimeout(() => {
-      const botResponses = [
-        "I remember that! Tell me more.",
-        "That's interesting. I'll keep that in mind.",
-        "Got it! Is there anything else you'd like to tell me?",
-        "I'm learning about you. What else should I know?",
-        "Memory stored! You can ask me about it later."
-      ];
-      const response = botResponses[Math.floor(Math.random() * botResponses.length)];
-      setMessages(prev => [...prev, { role: 'bot', text: response }]);
-      setMessage(response);
-    }, 1000);
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+      
+      // Call your backend API
+      const response = await fetch('https://memora-api-6wym.onrender.com/api/v1/chat/query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        },
+        body: JSON.stringify({ 
+          text: text  // ✅ Using 'text' field name (matches backend)
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Add bot response to UI
+      setMessages(prev => [...prev, { 
+        role: 'bot', 
+        text: data.response || data.text || 'I processed your message.' 
+      }]);
+      setMessage('💬 Response received!');
+      
+    } catch (error) {
+      console.error('Chat error:', error);
+      setMessages(prev => [...prev, { 
+        role: 'bot', 
+        text: '⚠️ Sorry, I\'m having trouble connecting. Please try again later.' 
+      }]);
+      setMessage('❌ Error connecting to server');
+    }
   };
 
   const handleCloseChat = () => {
