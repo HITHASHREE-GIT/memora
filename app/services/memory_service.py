@@ -10,26 +10,28 @@ class MemoryService:
         
         # Check if we should use cloud or local
         if settings.QDRANT_MODE == "local":
-            print("📁 Using LOCAL Qdrant storage")
+            print("📁 Using LOCAL Qdrant storage", flush=True)
             self.client = QdrantClient(path=settings.QDRANT_PATH)
         else:
-            print("☁️ Using CLOUD Qdrant")
-            print(f"   URL: {settings.get_qdrant_url()}")
+            print("☁️ Using CLOUD Qdrant", flush=True)
+            print(f"   URL: {settings.get_qdrant_url()}", flush=True)
             self.client = QdrantClient(
                 url=settings.get_qdrant_url(),
-                api_key=settings.QDRANT_API_KEY
+                api_key=settings.QDRANT_API_KEY,
+                check_compatibility=False,  # ✅ FIX: Add this to avoid version mismatch
+                timeout=60  # ✅ FIX: Add timeout to prevent hangs
             )
             
         self._ensure_collections()
-        print("✅ Qdrant initialized successfully")
+        print("✅ Qdrant initialized successfully", flush=True)
 
     def _ensure_collections(self):
         # 1. FACES
         try:
             self.client.get_collection("faces")
-            print("✅ Collection 'faces' exists")
+            print("✅ Collection 'faces' exists", flush=True)
         except Exception:
-            print("🔄 Creating collection 'faces'...")
+            print("🔄 Creating collection 'faces'...", flush=True)
             self.client.recreate_collection(
                 collection_name="faces",
                 vectors_config=VectorParams(size=512, distance=Distance.COSINE)
@@ -38,9 +40,9 @@ class MemoryService:
         # 2. OBJECTS
         try:
             self.client.get_collection("objects")
-            print("✅ Collection 'objects' exists")
+            print("✅ Collection 'objects' exists", flush=True)
         except Exception:
-            print("🔄 Creating collection 'objects'...")
+            print("🔄 Creating collection 'objects'...", flush=True)
             self.client.recreate_collection(
                 collection_name="objects",
                 vectors_config=VectorParams(size=1280, distance=Distance.COSINE)
@@ -49,9 +51,9 @@ class MemoryService:
         # 3. PATIENTS
         try:
             self.client.get_collection("patients")
-            print("✅ Collection 'patients' exists")
+            print("✅ Collection 'patients' exists", flush=True)
         except Exception:
-            print("🔄 Creating collection 'patients'...")
+            print("🔄 Creating collection 'patients'...", flush=True)
             self.client.recreate_collection(
                 collection_name="patients",
                 vectors_config=VectorParams(size=512, distance=Distance.COSINE)
@@ -89,7 +91,7 @@ class MemoryService:
             all_res.sort(key=lambda x: x.score, reverse=True)
             return all_res[:limit]
         except Exception as e:
-            print(f"⚠️ Search face error: {e}")
+            print(f"⚠️ Search face error: {e}", flush=True)
             return []
 
     def store_object_memory(self, object_id: str, embedding: list, metadata: dict):
@@ -113,7 +115,7 @@ class MemoryService:
             )
             return response.points
         except Exception as e:
-            print(f"⚠️ Search object error: {e}")
+            print(f"⚠️ Search object error: {e}", flush=True)
             return []
 
     def search_by_text(self, text_query: str):
@@ -169,7 +171,7 @@ class MemoryService:
             return []
 
         except Exception as e:
-            print(f"Fuzzy search error: {e}")
+            print(f"Fuzzy search error: {e}", flush=True)
             return []
 
 memory_service = MemoryService()
