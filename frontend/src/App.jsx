@@ -11,7 +11,9 @@ import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import CaregiverDashboard from './pages/CaregiverDashboard';
 import axios from 'axios';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+// ===== DYNAMIC API BASE =====
+// Uses environment variable if available, otherwise falls back to localhost
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api/v1';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

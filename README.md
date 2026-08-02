@@ -1020,6 +1020,39 @@ deepface                  # Emotion detection
 
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
+## Setup
+
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+2.Fill in your actual API keys in .env:
+
+    Get Qdrant API key from Qdrant Cloud
+
+    Get Groq API key from Groq Console
+3.    Never commit .env to Git!
+
+text
+
+
+---
+
+## 🔍 Check for Exposed Keys Before Pushing
+
+### Scan for API Keys in Your Code:
+
+```cmd
+# Search for Qdrant API keys in your files
+findstr /S /I "qdrant" *.py *.env *.txt
+
+# Search for Groq API keys
+findstr /S /I "gsk_" *.py *.env *.txt
+findstr /S /I "groq" *.py *.env *.txt
+
+# Look for hardcoded keys
+findstr /S /I "API_KEY = " *.py
+findstr /S /I "api_key = " *.py
+
 
 
 
